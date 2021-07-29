@@ -1,0 +1,468 @@
+{block title}Rekapitulace objednávky{/block}
+{block header}
+Rekapitulace objednávky
+{/block}
+{block content}
+{snippet allsend}
+{* PC version rekapitualce objednávky*}
+<div class="container bg-light cont-custom hidden-mobile-send">
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-image">
+                <thead>
+                    <tr>
+                        <th scope="col">Datum</th>
+                        <th scope="col">Kategorie</th>
+                        <th scope="col">Počet vzorů</th>
+                        <th scope="col">Celkový počet</th>
+                        <th scope="col">Měna</th>
+                        <th scope="col">Kurz</th>
+                        <th scope="col">Stáhnout</th>
+                        <th scope="col">Stav</th>
+                        <th scope="col">JSON</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            {$info['created_at']|dateCZ}
+                        </td>
+                        <td>
+                            {$info['category']}
+                        </td>
+                        <td>
+                            {$info['quantity']} ks
+                        </td>
+
+                        <td>
+                            {$info['quantity_all']} {if strpos($info['category'], 'softshell') === false and $info['quantity']
+                            < 5}role {elseif strpos($info[ 'category'], 'softshell')===false}rolí{else}m{/if} </td>
+                                <td>
+
+                                    <select class="form-control currency" style="width:auto;min-width:70px" name="currency" data-id="{$info[order_number]}">
+                                        <option {if ($info[currency]=='Kč' )} selected {/if} value="Kč">Kč</option>
+                                        <option {if ($info[currency]=='€' )} selected {/if} value="€">€</option>
+                                        <option {if ($info[currency]=='zł' )} selected {/if} value="zł">zł</option>
+                                    </select>
+                                </td>
+                                <td>
+
+                                    <input type="number" data-id="{$info[order_number]}" class="form-control exchange_rate ajax" style="max-width:100px" min="0.00" step="0.01" name="exchange_rate" value="{$info[exchange_rate]}">
+                                </td>
+                                <td>
+                                    <button class="btn btn-light {$info['zip/pdf']}" id="{$info['zip/pdf']}">
+                                        {if $info['zip/pdf'] == 'pdf'}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-pdf" viewBox="0 0 16 16">
+                                            <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
+                                            <path d="M4.603 12.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.701 19.701 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.187-.012.395-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.065.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.716 5.716 0 0 1-.911-.95 11.642 11.642 0 0 0-1.997.406 11.311 11.311 0 0 1-1.021 1.51c-.29.35-.608.655-.926.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.27.27 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.647 12.647 0 0 1 1.01-.193 11.666 11.666 0 0 1-.51-.858 20.741 20.741 0 0 1-.5 1.05zm2.446.45c.15.162.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.881 3.881 0 0 0-.612-.053zM8.078 5.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z" />
+                                        </svg>
+                                        {else}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-zip" viewBox="0 0 16 16">
+                                            <path d="M6.5 7.5a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v.938l.4 1.599a1 1 0 0 1-.416 1.074l-.93.62a1 1 0 0 1-1.109 0l-.93-.62a1 1 0 0 1-.415-1.074l.4-1.599V7.5zm2 0h-1v.938a1 1 0 0 1-.03.243l-.4 1.598.93.62.93-.62-.4-1.598a1 1 0 0 1-.03-.243V7.5z" />
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm5.5-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9v1H8v1h1v1H8v1h1v1H7.5V5h-1V4h1V3h-1V2h1V1z" />
+                                        </svg>
+                                        {/if}</button>
+                                </td>
+                                <td>
+                                    <select class="form-control control-custom-cat" id="category-chos" name="category" onchange="">
+                                        <option value="1" {if $info[status]=='nová' }selected{/if}>Nová</option>
+                                        <option value="2" {if $info[status]=='posláno do výroby' }selected{/if}>Posláno do výroby</option>
+                                        <option value="3" {if $info[status]=='hotová' }selected{/if}>Hotová</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <a id="redirect-json" class="btn btn-primary" _blank  href="{$basePath}/api-sklad/json?order_id={$info[order_number]}" role="button">Odeslat</a>
+                                </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div> {* END *} 
+{* mobile version rekapitulace objednávky*}
+<div class="container hidde-pc-send cont-custom">
+    <table class="table table-bordered table-striped table-responsive-stack" id="tableOne">
+        <thead class="">
+            <tr>
+                <th>Datum</th>
+                <th>Kategorie</th>
+                <th>Počet vzorů</th>
+                <th>Celkový počet</th>
+                <th>Měna</th>
+                <th>Kurz</th>
+                <th>Stáhnout</th>
+                <th>Stav</th>
+                <th>JSON</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+
+                <td>
+                    {$info['created_at']|dateCZ}
+                </td>
+                <td>
+                    {$info['category']}
+                </td>
+                <td>
+                    {$info['quantity']} ks
+                </td>
+                <td>
+                    {$info['quantity_all']} {if strpos($info['category'], 'softshell') === false and $info['quantity']
+                    < 5}role {elseif strpos($info[ 'category'], 'softshell')===false}rolí{else}m{/if} </td>
+                        <td>
+
+                            <select class="form-control currency" style="width:auto;min-width:80px;display:inline-block;" name="currency" data-id="{$info[order_number]}">
+                             <option {if ($info[currency]=='Kč' )} selected {/if} value="Kč">Kč</option>
+                                        <option {if ($info[currency]=='€' )} selected {/if} value="€">€</option>
+                                        <option {if ($info[currency]=='zł' )} selected {/if} value="zł">zł</option>
+                            </select>
+                        </td>
+                        <td>
+
+                            <input type="number" data-id="" class="form-control send-inputs exchange_rate" style="display:inline-block;" min="0.00" step="0.01" name="exchange_rate" value="">
+                        </td>
+                        <td>
+                            <button class="btn btn-secondary {$info['zip/pdf']}" style="width:20%" id="{$info['zip/pdf']}">
+                                {if $info['zip/pdf'] == 'pdf'}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-pdf" viewBox="0 0 16 16">
+                                    <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
+                                    <path d="M4.603 12.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.701 19.701 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.187-.012.395-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.065.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.716 5.716 0 0 1-.911-.95 11.642 11.642 0 0 0-1.997.406 11.311 11.311 0 0 1-1.021 1.51c-.29.35-.608.655-.926.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.27.27 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.647 12.647 0 0 1 1.01-.193 11.666 11.666 0 0 1-.51-.858 20.741 20.741 0 0 1-.5 1.05zm2.446.45c.15.162.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.881 3.881 0 0 0-.612-.053zM8.078 5.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z" />
+                                </svg>
+                                {else}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-zip" viewBox="0 0 16 16">
+                                    <path d="M6.5 7.5a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v.938l.4 1.599a1 1 0 0 1-.416 1.074l-.93.62a1 1 0 0 1-1.109 0l-.93-.62a1 1 0 0 1-.415-1.074l.4-1.599V7.5zm2 0h-1v.938a1 1 0 0 1-.03.243l-.4 1.598.93.62.93-.62-.4-1.598a1 1 0 0 1-.03-.243V7.5z" />
+                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm5.5-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9v1H8v1h1v1H8v1h1v1H7.5V5h-1V4h1V3h-1V2h1V1z" />
+                                </svg>
+                                {/if}</button>
+                        </td>
+                        <td>
+                            <select class="form-control control-custom-cat" id="category-chos" name="category" onchange="">
+                                <option value="1" {if $info[status]=='nová' }selected{/if}>Nová</option>
+                                <option value="2" {if $info[status]=='posláno do výroby' }selected{/if}>Posláno do výroby</option>
+                                <option value="3" {if $info[status]=='hotová' }selected{/if}>Hotová</option>
+                            </select>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" href="#" role="button">Odeslat</a>
+                        </td>
+            </tr>
+        </tbody>
+    </table>
+</div> {* END *} {* Výpočty *}
+<div class="container cont-custom bg-light" style="margin-top:unset">
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-image">
+                <thead>
+                    <tr>
+                        <th scope="col">  {if (strpos($info[category], 'softshell')) === false}cena přípravy za metr{else}Cena tisku({$info[currency]}){/if}</th>
+                        <th scope="col">cena surové</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {if (strpos($info[category], 'softshell')) === false}
+							{$calculations[0]} kč
+							{else}<input type="number" class="form-control price-send" style="width:auto" min="0.00" step="0.01" name="price" value="{$products[0][price]}" data-order_item="-1">{/if} 
+                        </td>
+                        <td>
+                            {$calculations[1]} kč
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+{* end *} {* PC - Příprava *} {if $preparationBool == true}
+<h1 class="pb-2 pos-center" style="margin-top:2%">
+	Příprava
+</h1>
+
+<div class="container bg-light cont-custom preparation-custom" style="">
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-image">
+                <thead>
+                    <tr>
+
+                        <th scope="col" class="col-md-3">Cena</th>
+                        <th scope="col" class="col-md-3">Hmotnost(kg)</th>
+                    </tr>
+                </thead>
+
+                <tbody class="append-here">
+                    {* deffault preparation *}
+                    <tr class="preparation-add_0" hidden>
+                        <td>
+                            <input type="number" class="form-control price-preparation" min="0.00" step="0.01" name="price_preparation" value="0.00">
+                        </td>
+                        <td>
+                            <input type="number" class="form-control weight-preparation" min="0" name="weight_preparation" value="0">
+                        </td>
+                    </tr>
+                    {* end *}
+                    <tr n:foreach="$preparation as $item" class="preparation">
+                        <td>
+                            <input type="number" class="form-control price-preparation" id="{$item[id_preparation]}" min="0.00" step="0.01" name="price_preparation" value="{$item[price]}">
+                        </td>
+                        <td>
+                            <input type="number" class="form-control weight-preparation" id="{$item[id_preparation]}" min="0" name="weight_preparation" value="{$item[weight]}">
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary button next-preparation" id="0">Přidat</button>
+</div>
+{/if} {* END *} {* Výpis *}
+<h1 class="pb-2 pos-center" style="margin-top:2%">
+	Výpis objednávky
+</h1>
+<div class="container bg-light cont-custom" style="overflow-x:auto;">
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-image">
+                <thead>
+                    <tr>
+                        <th scope="col">Obrázek</th>
+                        <th scope="col">Název</th>
+                        {if (strpos($info[category], 'softshell')) === false}<th scope="" class="col-2">Externí ID</th>{/if}
+                        <th scope="col">Počet</th>
+                        {if (strpos($info[category], 'softshell')) === false}<th scope="col">Množství(m)</th>{/if}
+                         {if (strpos($info[category], 'softshell')) === false}<th scope="col">Cena</th>{/if}
+                        {if (strpos($info[category], 'softshell')) === false} <th scope="col">cena tisku</th>{/if}
+                      <th scope="col">Celková cena</th>
+                    </tr>
+                </thead>
+				
+                <tbody n:foreach="$products as $product" class="ajax">
+                    <tr class="tr_{$product[product_id]}">
+                     
+                            <td class="w-25" style="min-width:150px">
+                                <img src="{$basePath}/img/{$product[img_name_jpg]}" class="img-fluid img-thumbnail" alt="Sheep">
+                            </td>
+                            <td>
+                                {$product[product_name]}
+                            </td>
+                            {if (strpos($info[category], 'softshell')) === false}  <td>
+                                {$product[external_id]}
+                            </td>{/if}
+                            <td>
+                                {$product[quantity]} {if (strpos($info['category'], 'softshell') === false and $info['quantity'] < 5)}role {elseif strpos($info['category'], 'softshell') === false}rolí{elseif $info['quantity'] == 1} metr{elseif ($info['quantity'] < 5)}metry{else}metrů{/if}
+                            </td>
+                           {if (strpos($info[category], 'softshell')) === false}   <td>
+                                <input type="number" class="form-control send-inputs quantity-send-external" min="0" name="quantity_external" value="{$product[quantity_external]}" data-order_item="{$product[item_id]}">
+                            </td>{/if}
+                           {if (strpos($info[category], 'softshell')) === false}  <td>
+                                <input type="number" class="form-control price-send send-inputs" style="" min="0.00" step="0.01" name="price" value="{$product[price]}" data-order_item="{$product[item_id]}">
+                            </td>{/if}
+                           {if (strpos($info[category], 'softshell')) === false}  <td>
+                                {$product['print_price']} kč
+                            </td>{/if}
+                             <td class="ajax">
+                                {$product['total_price']} kč
+                            </td>
+                        
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+{* END *}
+<footer class="bg-light text-center text-lg-start footer-custom">
+
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+    {if (strpos($info[category], 'softshell')) === false}
+        Celková cena(příprava): {$InfoAll[price]} | Celkový počet: {$InfoAll[quantity]}
+     {*    {else}
+        Celková cena:    {$products[0]['total_price']} kč *}
+        {/if}
+    </div>
+
+</footer>
+{/snippet}
+{/block}
+{block scripts}
+{include parent}
+<script>
+//stránkování
+var CountPreparation = {$last_preparation} + 1;
+$(document).on('click', '.next-preparation', function(){
+var test =  $('.preparation-add_0').clone();
+$(test).toggleClass('preparation-add_0 preparation');
+$(test).removeAttr('hidden'); 
+$(test).find('.price-preparation').attr('id', CountPreparation);
+$(test).find('.weight-preparation').attr('id', CountPreparation);
+ $( test ).appendTo( '.append-here');
+
+CountPreparation++;
+   
+});
+
+//change status
+$(document).on('change','#category-chos', function() {
+	  naja.makeRequest( "POST", {link ChangeStatus!}, {
+                    'status': $(this).val(),
+					'order_id': {$info[order_number]}
+                } );
+});
+
+//pdf download
+$('.pdf').click(function(){
+    window.open({$basePath}+'/assets/pdf/generated{$info[order_number]}.pdf');
+})
+
+//zip download
+$('.zip').click(function(e){
+	var order_number = $(this).attr('data-id');
+    e.preventDefault();  //stop the browser from following
+    window.location.href = {$basePath}+'/assets/zips/softshell'+{$info[order_number]}+'.zip';
+})
+
+
+//mobile table
+$(document).ready(function() {
+
+   
+
+   $('.table-responsive-stack').each(function (i) {
+      var id = $(this).attr('id');
+      //alert(id);
+      $(this).find("th").each(function(i) {
+         $('#'+id + ' td:nth-child(' + (i + 1) + ')').prepend('<span class="table-responsive-stack-thead">'+             $(this).text() + ':</span> ');
+         $('.table-responsive-stack-thead').hide();
+         
+      });
+      
+
+      
+   });
+
+   
+   
+   
+   
+$( '.table-responsive-stack' ).each(function() {
+  var thCount = $(this).find("th").length; 
+   var rowGrow = 100 / thCount + '%';
+   //console.log(rowGrow);
+   $(this).find("th, td").css('flex-basis', rowGrow);   
+});
+   
+   
+ /*$('#redirect-json').click(function(){
+     if(confirm('Opravdu chcete odeslat JSON?')){
+    naja.makeRequest( "POST", {link SendJson!}, {
+					'order_id': {$info[order_number]},
+                    success: window.open('../assets/data.json', 'name')
+    });
+     
+     }
+     
+ });*/
+   
+function flexTable(){
+   if ($(window).width() < 804) {
+      
+   $(".table-responsive-stack").each(function (i) {
+      $(this).find(".table-responsive-stack-thead").show();
+      $(this).find('thead').hide();
+   });
+      
+    
+   // window is less than 768px   
+   } else {
+      
+      
+   $(".table-responsive-stack").each(function (i) {
+      $(this).find(".table-responsive-stack-thead").hide();
+      $(this).find('thead').show();
+   });
+      
+      
+
+   }
+// flextable   
+}      
+ 
+flexTable();
+   
+window.onresize = function(event) {
+    flexTable();
+};
+   
+   
+   
+   
+
+  
+// document ready  
+});
+
+//počet ve výpisu
+$(document).on('change', '.quantity-send-external', function(){
+naja.makeRequest( "POST", {link ChangeQuantityExternal!}, {
+                    'quantity_external': $(this).val(),
+					'item_id':  $(this).attr('data-order_item')
+});
+});
+//price
+$(document).on('change','.price-send', function(){
+naja.makeRequest( "POST", {link ChangePriceSend!}, {
+                    'price': $(this).val(),
+					'item_id':  $(this).attr('data-order_item'),
+                    'order_id':  {$info[order_number]}
+});
+});
+
+//price preparation
+$(document).on('change','.price-preparation',function(){
+naja.makeRequest( "POST", {link ChangePricePreparation!}, {
+                    'price_preparation': $(this).val(),
+					'preparation_id': $(this).attr("id"),
+					'order_id':  {$info[order_number]}
+});
+});
+
+//weight preparation
+$(document).on('change','.weight-preparation',function(){
+naja.makeRequest( "POST", {link ChangeWeightPreparation!}, {
+                    'weight_preparation': $(this).val(),
+					'preparation_id': $(this).attr("id"),
+					'order_id':  {$info[order_number]}
+});
+});
+
+//currency
+$(document).on('change','.currency', function(){
+naja.makeRequest( "POST", {link ChangeCurrencySend!}, {
+ 					'currency': $(this).val(),
+					'order_number': $(this).attr("data-id")
+});
+});
+
+//exchange rate
+$(document).on('change','.exchange_rate', function(){
+naja.makeRequest( "POST", {link ChangeExchangeRateSend!}, {
+                    'exchange_rate': $(this).val(),
+					'order_number': $(this).attr("data-id"),
+                     success: function(payload) {
+				console.log(payload);
+			}
+});
+
+});
+
+
+</script>
+{/block}

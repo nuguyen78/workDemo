@@ -1,0 +1,34 @@
+{block content}
+<div class="panel panel-default "style="margin-top:1%">
+
+   <div class="panel-body">
+      <!-- Drop Zone -->
+      <div class="upload-drop-zone">
+         
+         <form action="?do=upload" class="dropzone" id ="myAwesomeDropzone">
+         <div class="dz-message" data-dz-message><span style="font-size:30px;font-weight:bold">Upload souborů</span></div></form>
+      </div>
+   </div>
+</div>
+<a class="btn btn-primary continue" n:href="ProceesProducts:process" role="button">Pokračovat</a>
+{/block}
+{block scripts}
+<script>
+Dropzone.options.myAwesomeDropzone = {
+  paramName: "file",
+  maxFilesize: 120, // MB
+  parallelUploads: 1,
+  createImageThumbnails: false,
+  timeout: 0,
+  init: function () {
+      this.on("queuecomplete", function (file) {
+          alert("Všechny soubory nahrány");
+          $(".continue").css("display", "unset");
+      });
+  },
+  accept: function(file, done) {
+done();
+  }
+};
+</script>
+{/block}
